@@ -4,7 +4,7 @@ from i_input_output_callbacks import IInputOutputCallbacks
 from enumbutton import EnumButton
 
 
-class TKWIndow():
+class TKWIndow(IInputOutputCallbacks):
     """
     A gui for the Advance Alarm Clock program. This is intended for testing the
      internal progarmming without the needed display physical hardware.
@@ -60,3 +60,4 @@ class TKWIndow():
 if __name__ == '__main__':
     t = TKWIndow()
     t.output1.set("Test")
+    t.root.mainloop()

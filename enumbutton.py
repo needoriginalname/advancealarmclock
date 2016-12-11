@@ -27,7 +27,7 @@ class EnumButton(Enum):
     def get_button_from_keyboard(cls, key):
         # given keyboard key, returns the respective EnumButton
         for member in list(cls):
-            if member.getKeyboardKey() == key:
+            if member.get_keyboard_key() == key:
                 return member
         return None
 
