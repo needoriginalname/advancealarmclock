@@ -1,9 +1,10 @@
 from abc import ABCMeta, abstractmethod
 
-class IInputOutputCallbacks(metaclass = ABCMeta):
 
+class IInputOutputCallbacks(metaclass=ABCMeta):
     def __init__(self):
         super(IInputOutputCallbacks, self).__init__()
+
     @abstractmethod
     def set_output(self, output_list):
         """Sets the string that should be displayed
@@ -11,6 +12,7 @@ class IInputOutputCallbacks(metaclass = ABCMeta):
         outputList -- a list of no more then 2 strings, to be displayed
         """
         pass
+
     @abstractmethod
     def get_buttons_pressed(self):
         """returns a list of EnumButton that just got pressed"""
