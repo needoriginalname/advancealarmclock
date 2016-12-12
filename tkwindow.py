@@ -37,11 +37,12 @@ class TKWIndow(IInputOutputCallbacks):
             self.output1.set("")
             self.output2.set("")
 
-    def __init__(self):
+    def __init__(self, config):
         self.root = Tk()
         self.root.title("Advance Alarm Clock")
         self.mainframe = ttk.Frame(self.root, padding="3 3 12 12")
         self.mainframe.grid()
+        self.config = config
 
         self.button_down_string = StringVar()
         self.output1 = StringVar()
@@ -56,8 +57,17 @@ class TKWIndow(IInputOutputCallbacks):
         self.root.bind("<KeyPress>", lambda e: self.button_press(e))
         self.root.bind("<KeyRelease>", lambda e: self.button_release(e))
 
+    def _initalize_clock(self, config):
+        # TODO: add code to start backend system here
+        pass
 
-if __name__ == '__main__':
-    t = TKWIndow()
-    t.output1.set("Test")
-    t.root.mainloop()
+    def start(self):
+        self._initalize_clock(self.config)
+        self.root.after(100, func=self._loop())
+        self.root.mainloop()
+        pass
+
+    def _loop(self):
+        self.buttons_pressed.clear()
+        self.root.after(100, func=self._loop())
+        pass
