@@ -7,7 +7,6 @@ class WeatherController:
         self.owm = pyowm.OWM(self.config['api-key'])
         self.loc = self.config['location-code']
         self.time_to_check = int(self.config['update-time'])
-        self.unit = self.config['unit']
         self._time_last_checked = -1
         self.currentWeather = None
         self.weatherForecasts = None
@@ -16,7 +15,7 @@ class WeatherController:
     def update(self):
         if self._time_last_checked + self.time_to_check <= time.time():
             self._time_last_checked = time.time()
-            self.currentWeather = self.owm.weather_at_place(self.loc)
+            self.currentWeather = self.owm.weather_at_place(self.loc).get_weather()
             self.weatherForecasts = self.owm.daily_forecast(self.loc, limit=3)
 
     def get_current_weather(self):
