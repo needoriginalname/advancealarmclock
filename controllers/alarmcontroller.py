@@ -5,12 +5,8 @@ import os
 
 class AlarmController:
     def __init__(self, config):
-        # sets the alarm time
-        self.alarm_time = None
         self.alarm_config = config['Alarm']
         self.config = config['General']
-        self.set_alarm_time(int(self.alarm_config['hour']), int(self.alarm_config['minute']))
-        self.snooze_time = int(self.alarm_config['snooze'])
 
         # setup the alarm sound
         sound_filepath = os.path.join(os.path.dirname(__file__), 'alarm.wav')
@@ -18,6 +14,17 @@ class AlarmController:
         self._is_alarm_enabled = self.alarm_config['alarm-enabled']
         self._is_alarm_on = False
         self.audio_playing = None
+
+        # sets the alarm time
+        self.alarm_time = None
+        self.set_alarm_time(int(self.alarm_config['hour']), int(self.alarm_config['minute']))
+        self.snooze_time = int(self.alarm_config['snooze'])
+
+
+
+    def turn_off_alarm(self):
+        if self._is_alarm_on:
+            self._is_alarm_on = False
 
     def snooze(self):
         time_now = datetime.datetime.now().replace(second=0, microsecond=0)
@@ -50,7 +57,7 @@ class AlarmController:
         self.set_alarm_time(d.hour, d.minute)
 
     def set_alarm_time(self, hour, minute):
-        self._is_alarm_on = False
+        self.turn_off_alarm()
         alarm_hour = int(hour)
         alarm_min = int(minute)
         d = datetime.datetime.now()
