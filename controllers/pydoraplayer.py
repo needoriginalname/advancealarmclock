@@ -17,7 +17,7 @@ class PydoraPlayer(Player):
         self.song = song
         self._callbacks.play(song)
         self._send_cmd("load {}".format(song.audio_url))
-        if not song.is_ad
+        if not song.is_ad:
             print(song.song_name)
 
     def update(self):
