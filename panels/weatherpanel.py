@@ -2,10 +2,21 @@ from panels.ipanel import IPanel
 from enum import Enum
 from enumbutton import EnumButton
 from datetime import datetime
-MAX_PANELS = 3
+MAX_PANELS = 5
 DEGREE_SYMBOL = u"\u00b0"
 
+GENERAL = "General"
+WEATHER = "Weather"
+UNIT = "unit"
+TIME_FORMAT = "time-format"
+DATE_FORMAT = "date-format"
 
+# pyowm consts
+TEMP_MIN = "temp_min"
+TEMP_MAX = "temp_max"
+TEMP = "temp"
+MAX = "max"
+MIN = "min"
 class WeatherPanel(IPanel):
     def process_keys(self, keys_pressed, keys_down):
         if EnumButton.ENTER in keys_down:
@@ -26,7 +37,7 @@ class WeatherPanel(IPanel):
 
         else:
 
-            # display only the current weath panel
+            # display only the current weather panel
             self._panel_index = 0
             return False
 
@@ -38,20 +49,20 @@ class WeatherPanel(IPanel):
         bottomright = None
         if self._panel_index == 0:
             current_weather = self.weather_controller.get_current_weather()
-            temps = current_weather.get_temperature(self.weather_config['unit'])
+            temps = current_weather.get_temperature(self.weather_config[UNIT])
 
-            topleft = datetime.now().strftime(self.config["time-format"])
-            topright = str(temps["temp_min"]) + " / " + str(temps["temp_max"])
+            topleft = datetime.now().strftime(self.config[TIME_FORMAT])
+            topright = str(temps[TEMP_MIN]) + " / " + str(temps[TEMP_MAX])
             bottomleft = current_weather.get_detailed_status()
-            bottomright = str(temps["temp"])
+            bottomright = str(temps[TEMP])
         else:
             forcaster = self.weather_controller.get_forecast_weathers().get_forecast()
             forcast_weather = forcaster.get(self._panel_index - 1)
             time = datetime.fromtimestamp(forcast_weather.get_reference_time())
-            temps = forcast_weather.get_temperature(self.weather_config['unit'])
+            temps = forcast_weather.get_temperature(self.weather_config[UNIT])
 
-            topleft = time.strftime(self.config["date-format"])
-            topright = str(temps["min"]) + " / " + str(temps["max"])
+            topleft = time.strftime(self.config[DATE_FORMAT])
+            topright = str(temps[MIN]) + " / " + str(temps[MAX])
             bottomleft = forcast_weather.get_detailed_status()
             bottomright = ""  # temps["morn"] + " / " + temps["day"] + " / " + temps["eve"]
 
@@ -70,7 +81,7 @@ class WeatherPanel(IPanel):
         return d
 
     def __init__(self, config, weather_controller):
-        self.config = config['General']
-        self.weather_config = config['Weather']
+        self.config = config[GENERAL]
+        self.weather_config = config[WEATHER]
         self.weather_controller = weather_controller
         self._panel_index = 0

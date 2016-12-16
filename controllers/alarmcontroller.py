@@ -3,22 +3,30 @@ import datetime
 import os
 
 
+ALARM_SECTION = "Alarm"
+GENERAL_SECTION = "General"
+ALARM_FILE_LOCATION = "alarm.wav"
+ALARM_ENABLED = "alarm-enabled"
+HOUR = 'hour'
+MINUTE = 'minute'
+SNOOZE = 'snooze'
+
 class AlarmController:
     def __init__(self, config):
-        self.alarm_config = config['Alarm']
-        self.config = config['General']
+        self.alarm_config = config[ALARM_SECTION]
+        self.config = config[GENERAL_SECTION]
 
         # setup the alarm sound
-        sound_filepath = os.path.join(os.path.dirname(__file__), 'alarm.wav')
+        sound_filepath = os.path.join(os.path.dirname(__file__), ALARM_FILE_LOCATION)
         self.sound_file = simpleaudio.WaveObject.from_wave_file(sound_filepath)
-        self._is_alarm_enabled = self.alarm_config['alarm-enabled']
+        self._is_alarm_enabled = self.alarm_config[ALARM_ENABLED]
         self._is_alarm_on = False
         self.audio_playing = None
 
         # sets the alarm time
         self.alarm_time = None
-        self.set_alarm_time(int(self.alarm_config['hour']), int(self.alarm_config['minute']))
-        self.snooze_time = int(self.alarm_config['snooze'])
+        self.set_alarm_time(int(self.alarm_config[HOUR]), int(self.alarm_config[MINUTE]))
+        self.snooze_time = int(self.alarm_config[SNOOZE])
 
 
 
@@ -33,27 +41,27 @@ class AlarmController:
         self.set_alarm_time(time_snooze.hour, time_snooze.minute)
 
     def add_hour_to_alarm_config(self, reverse = False):
-        alarm_hour = int(self.alarm_config['hour'])
-        alarm_min = int(self.alarm_config['minute'])
+        alarm_hour = int(self.alarm_config[HOUR])
+        alarm_min = int(self.alarm_config[MINUTE])
         d = datetime.datetime.now().replace(hour=alarm_hour, minute=alarm_min,second=0,microsecond=0)
         hoursToChange = 1
         if reverse:
             hoursToChange = -1
         d = d + datetime.timedelta(hours=hoursToChange)
-        self.alarm_config['hour'] = str(d.hour)
-        self.alarm_config['minute'] = str(d.minute)
+        self.alarm_config[HOUR] = str(d.hour)
+        self.alarm_config[MINUTE] = str(d.minute)
         self.set_alarm_time(d.hour, d.minute)
 
     def add_minute_to_alarm_config(self, reverse=False):
-        alarm_hour = int(self.alarm_config['hour'])
-        alarm_min = int(self.alarm_config['minute'])
+        alarm_hour = int(self.alarm_config[HOUR])
+        alarm_min = int(self.alarm_config[MINUTE])
         d = datetime.datetime.now().replace(hour=alarm_hour, minute=alarm_min, second=0, microsecond=0)
         minutessToChange = 1
         if reverse:
             minutessToChange = -1
         d = d + datetime.timedelta(minutes=minutessToChange)
-        self.alarm_config['hour'] = str(d.hour)
-        self.alarm_config['minute'] = str(d.minute)
+        self.alarm_config[HOUR] = str(d.hour)
+        self.alarm_config[MINUTE] = str(d.minute)
         self.set_alarm_time(d.hour, d.minute)
 
     def set_alarm_time(self, hour, minute):
@@ -77,7 +85,7 @@ class AlarmController:
                 self._is_alarm_on = True
             else:
                 # resets alarm for the next day
-                self.set_alarm_time(self.alarm_config['hour'], self.alarm_config['min'])
+                self.set_alarm_time(self.alarm_config[HOUR], self.alarm_config[MINUTE])
 
         if self._is_alarm_on and (self.audio_playing is None or (not self.audio_playing.is_playing())):
             self.audio_playing = self.sound_file.play()

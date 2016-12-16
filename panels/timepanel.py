@@ -3,15 +3,23 @@ import math
 import datetime
 from enumbutton import EnumButton
 
+GENERAL = "General"
+EXTENDED_TIME_FORMAT = "extended-time-format"
+EXTENDED_DATE_FORMAT = "extended-date-format"
+
+ALARM_FORMAT = "alarm_format"
+HOUR_BLINK_ALARM_FORMAT = "hour-blink-alarm-format"
+MINUTE_BLINK_ALARM_FORMAT = "minute-blink-alarm-format"
+ALARM_TIME_STRING = "Alarm Time"
 
 class TimePanel(IPanel):
     def get_display(self):
         result = ["", ""]
         if self._panel_index == 0:
-            result[0] = self._center_string(datetime.datetime.now().strftime(self.config["extended-time-format"]))
-            result[1] = self._center_string(datetime.datetime.now().strftime(self.config["extended-date-format"]))
+            result[0] = self._center_string(datetime.datetime.now().strftime(self.config[EXTENDED_TIME_FORMAT]))
+            result[1] = self._center_string(datetime.datetime.now().strftime(self.config[EXTENDED_DATE_FORMAT]))
         else:
-            result[0] = self._center_string("Alarm Time")
+            result[0] = self._center_string(ALARM_TIME_STRING)
             if (datetime.datetime.now() - self._blink_change_time) > datetime.timedelta(milliseconds=500):
                 self._blink_change_time = datetime.datetime.now()
                 self._blink = not self._blink
@@ -19,12 +27,12 @@ class TimePanel(IPanel):
             if self._blink:
                 if self._panel_index == 1:
                     result[1] = self._center_string(
-                        self.alarm_controller.alarm_time.strftime(self.config["hour-blink-alarm-format"]))
+                        self.alarm_controller.alarm_time.strftime(self.config[HOUR_BLINK_ALARM_FORMAT]))
                 else:
                     result[1] = self._center_string(
-                        self.alarm_controller.alarm_time.strftime(self.config["minute-blink-alarm-format"]))
+                        self.alarm_controller.alarm_time.strftime(self.config[MINUTE_BLINK_ALARM_FORMAT]))
             else:
-                result[1] = self._center_string(self.alarm_controller.alarm_time.strftime(self.config["alarm-format"]))
+                result[1] = self._center_string(self.alarm_controller.alarm_time.strftime(self.config[ALARM_FORMAT]))
         return result
     def process_keys(self, keys_pressed, keys_down):
         if EnumButton.ENTER in keys_down:
@@ -58,7 +66,7 @@ class TimePanel(IPanel):
 
     def __init__(self, alarmcontroller, config):
         self.alarm_controller = alarmcontroller
-        self.config = config['General']
+        self.config = config[GENERAL]
         self._panel_index = 0
         self._blink = False
         self._blink_change_time = datetime.datetime.now()
