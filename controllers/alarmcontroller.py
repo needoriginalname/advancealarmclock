@@ -4,7 +4,7 @@ import os
 
 
 ALARM_SECTION = "Alarm"
-GENERAL_SECTION = "General"
+GENERAL = "General"
 ALARM_FILE_LOCATION = "alarm.wav"
 ALARM_ENABLED = "alarm-enabled"
 HOUR = 'hour'
@@ -14,7 +14,7 @@ SNOOZE = 'snooze'
 class AlarmController:
     def __init__(self, config):
         self.alarm_config = config[ALARM_SECTION]
-        self.config = config[GENERAL_SECTION]
+        self.config = config[GENERAL]
 
         # setup the alarm sound
         sound_filepath = os.path.join(os.path.dirname(__file__), ALARM_FILE_LOCATION)
@@ -89,16 +89,7 @@ class AlarmController:
 
         if self._is_alarm_on and (self.audio_playing is None or (not self.audio_playing.is_playing())):
             self.audio_playing = self.sound_file.play()
-        else:
+        elif not self._is_alarm_on:
             if self.audio_playing is not None and self.audio_playing.is_playing():
                 self.audio_playing.stop()
 
-    @staticmethod
-    def _wrap(n, min_value, max_value):
-        if n > max_value:
-            n = (n - max_value) + min_value
-
-        if n < min_value:
-            n = max_value - (min_value - n)
-
-        return n

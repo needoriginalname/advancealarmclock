@@ -10,10 +10,19 @@ class TKWIndow(IInputOutputCallbacks):
      internal progarmming without the needed display physical hardware.
     """
 
+    def update(self):
+        self.button_down_string = str(self.buttons_held_down)
+        self.button_press_string = str(self.buttons_pressed)
+        print("pressed " + str(self.buttons_pressed))
+        print("down " + str(self.buttons_held_down))
+
     def button_press(self, event):
         button = EnumButton.get_button_from_keyboard(event.char)
-        self.buttons_pressed.append(button)
-        self.buttons_held_down.append(button)
+        if button not in self.buttons_pressed and button not in self.buttons_held_down:
+            self.buttons_pressed.append(button)
+            self.buttons_held_down.append(button)
+        elif button in self.buttons_held_down:
+            pass
 
     def button_release(self, event):
         button = EnumButton.get_button_from_keyboard(event.char)
@@ -37,17 +46,19 @@ class TKWIndow(IInputOutputCallbacks):
             self.output1.set("")
             self.output2.set("")
 
-    def __init__(self, config):
+    def __init__(self, config, alarm_clock_head):
         self.root = Tk()
         self.root.title("Advance Alarm Clock")
         self.mainframe = ttk.Frame(self.root, padding="3 3 12 12")
         self.mainframe.grid()
         self.config = config
 
+        self.button_press_string = StringVar()
         self.button_down_string = StringVar()
         self.output1 = StringVar()
         self.output2 = StringVar()
 
+        ttk.Label(self.mainframe, textvariable=self.button_press_string).grid()
         ttk.Label(self.mainframe, textvariable=self.button_down_string).grid()
         ttk.Label(self.mainframe, textvariable=self.output1).grid()
         ttk.Label(self.mainframe, textvariable=self.output2).grid()
@@ -56,18 +67,16 @@ class TKWIndow(IInputOutputCallbacks):
         self.buttons_held_down = []
         self.root.bind("<KeyPress>", lambda e: self.button_press(e))
         self.root.bind("<KeyRelease>", lambda e: self.button_release(e))
-
-    def _initalize_clock(self, config):
-        # TODO: add code to start backend system here
-        pass
+        self.alarm_clock_head = alarm_clock_head
 
     def start(self):
-        self._initalize_clock(self.config)
-        self.root.after(100, func=self._loop())
+        self.root.after(100, func=self._loop)
         self.root.mainloop()
         pass
 
     def _loop(self):
+        self.update()
+        self.alarm_clock_head.update()
         self.buttons_pressed.clear()
-        self.root.after(100, func=self._loop())
+        self.root.after(100, func=self._loop)
         pass

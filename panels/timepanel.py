@@ -7,7 +7,7 @@ GENERAL = "General"
 EXTENDED_TIME_FORMAT = "extended-time-format"
 EXTENDED_DATE_FORMAT = "extended-date-format"
 
-ALARM_FORMAT = "alarm_format"
+ALARM_FORMAT = "alarm-format"
 HOUR_BLINK_ALARM_FORMAT = "hour-blink-alarm-format"
 MINUTE_BLINK_ALARM_FORMAT = "minute-blink-alarm-format"
 ALARM_TIME_STRING = "Alarm Time"
@@ -64,7 +64,7 @@ class TimePanel(IPanel):
                 return True
             return False
 
-    def __init__(self, alarmcontroller, config):
+    def __init__(self, config, alarmcontroller):
         self.alarm_controller = alarmcontroller
         self.config = config[GENERAL]
         self._panel_index = 0

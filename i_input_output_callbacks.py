@@ -6,6 +6,11 @@ class IInputOutputCallbacks(metaclass=ABCMeta):
         super(IInputOutputCallbacks, self).__init__()
 
     @abstractmethod
+    def update(self):
+        # update loop for system to check for updates for keystrokes
+        pass
+
+    @abstractmethod
     def set_output(self, output_list):
         """Sets the string that should be displayed
         Keyword arguments:
