@@ -36,7 +36,7 @@ class TimePanel(IPanel):
         return result
     def process_keys(self, keys_pressed, keys_down):
         if EnumButton.ENTER in keys_down:
-            self.alarm_controller.turn_off_alarm()
+            self.alarm_controller.reset_alarm_from_configs()
             if self._panel_index == 0:
                 self._panel_index = 1
 

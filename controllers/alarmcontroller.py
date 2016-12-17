@@ -2,7 +2,6 @@ import simpleaudio
 import datetime
 import os
 
-
 ALARM_SECTION = "Alarm"
 GENERAL = "General"
 ALARM_FILE_LOCATION = "alarm.wav"
@@ -10,6 +9,7 @@ ALARM_ENABLED = "alarm-enabled"
 HOUR = 'hour'
 MINUTE = 'minute'
 SNOOZE = 'snooze'
+
 
 class AlarmController:
     def __init__(self, config):
@@ -28,11 +28,13 @@ class AlarmController:
         self.set_alarm_time(int(self.alarm_config[HOUR]), int(self.alarm_config[MINUTE]))
         self.snooze_time = int(self.alarm_config[SNOOZE])
 
-
-
     def turn_off_alarm(self):
         if self._is_alarm_on:
             self._is_alarm_on = False
+
+    def reset_alarm_from_configs(self):
+        self.turn_off_alarm()
+        self.set_alarm_time(self.alarm_config[HOUR], self.alarm_config[MINUTE])
 
     def snooze(self):
         time_now = datetime.datetime.now().replace(second=0, microsecond=0)
@@ -40,10 +42,10 @@ class AlarmController:
 
         self.set_alarm_time(time_snooze.hour, time_snooze.minute)
 
-    def add_hour_to_alarm_config(self, reverse = False):
+    def add_hour_to_alarm_config(self, reverse=False):
         alarm_hour = int(self.alarm_config[HOUR])
         alarm_min = int(self.alarm_config[MINUTE])
-        d = datetime.datetime.now().replace(hour=alarm_hour, minute=alarm_min,second=0,microsecond=0)
+        d = datetime.datetime.now().replace(hour=alarm_hour, minute=alarm_min, second=0, microsecond=0)
         hoursToChange = 1
         if reverse:
             hoursToChange = -1
@@ -92,4 +94,3 @@ class AlarmController:
         elif not self._is_alarm_on:
             if self.audio_playing is not None and self.audio_playing.is_playing():
                 self.audio_playing.stop()
-
