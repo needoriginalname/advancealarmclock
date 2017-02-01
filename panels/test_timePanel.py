@@ -32,7 +32,7 @@ class TestTimePanel(TestCase):
         }}
 
         alarm_controller = AlarmController(config)
-        self.panel = TimePanel(alarm_controller, config)
+        self.panel = TimePanel(config, alarm_controller)
 
     def test_display(self):
         self.panel._panel_index = 0

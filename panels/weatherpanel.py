@@ -2,7 +2,8 @@ from panels.ipanel import IPanel
 from enum import Enum
 from enumbutton import EnumButton
 from datetime import datetime
-MAX_PANELS = 5
+from .lcddisplaydesigner import LCDDisplayDesigner
+MAX_PANELS = 3
 DEGREE_SYMBOL = u"\u00b0"
 
 GENERAL = "General"
@@ -47,14 +48,18 @@ class WeatherPanel(IPanel):
         topright = None
         bottomleft = None
         bottomright = None
+        lcd = None
         if self._panel_index == 0:
             current_weather = self.weather_controller.get_current_weather()
             temps = current_weather.get_temperature(self.weather_config[UNIT])
 
             topleft = datetime.now().strftime(self.config[TIME_FORMAT])
-            topright = str(temps[TEMP_MIN]) + " / " + str(temps[TEMP_MAX])
+            topright = str(temps[TEMP])
             bottomleft = current_weather.get_detailed_status()
-            bottomright = str(temps[TEMP])
+            bottomright = ""
+
+            lcd = LCDDisplayDesigner(top_left= topleft, top_right=topright,bottom_left=bottomleft,
+                                     bottom_right=bottomright)
         else:
             forcaster = self.weather_controller.get_forecast_weathers().get_forecast()
             forcast_weather = forcaster.get(self._panel_index - 1)
@@ -65,23 +70,33 @@ class WeatherPanel(IPanel):
             topright = str(temps[MIN]) + " / " + str(temps[MAX])
             bottomleft = forcast_weather.get_detailed_status()
             bottomright = ""  # temps["morn"] + " / " + temps["day"] + " / " + temps["eve"]
+            lcd = LCDDisplayDesigner(top_left=topleft, top_right=topright, bottom_left=bottomleft,
+                                     bottom_right=bottomright)
 
-        space1 = 20 - (len(topleft) + len(topright))
-        space2 = 20 - (len(bottomleft) + len(bottomright))
-        if (space1 < 0):
-            space1 = 1
-        if (space2 < 0):
-            space2 = 1
-        output1 = topleft + (" " * space1) + topright
-        output2 = bottomleft + (" " * space2) + bottomright
 
-        d[0] = output1
-        d[1] = output2
-
-        return d
+        return lcd
 
     def __init__(self, config, weather_controller):
         self.config = config[GENERAL]
         self.weather_config = config[WEATHER]
         self.weather_controller = weather_controller
         self._panel_index = 0
+
+@staticmethod
+def _get_center_padding(s):
+    # get padding to center the string for middle of display
+    n = 20 - len(s)
+    l = math.floor(n / 2)
+    r = math.ceil(n / 2)
+
+    if l < 0:
+        l = 0
+    if r < 0:
+        r = 0
+
+    return l, r
+
+def _center_string(self, s):
+    l, r = self._get_center_padding(s)
+    result = " " * l + s + " " * r
+    return result
