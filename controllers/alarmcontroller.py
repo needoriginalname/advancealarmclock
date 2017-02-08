@@ -1,4 +1,4 @@
-import simpleaudio
+import pygame
 import datetime
 import os
 
@@ -18,7 +18,10 @@ class AlarmController:
 
         # setup the alarm sound
         sound_filepath = os.path.join(os.path.dirname(__file__), ALARM_FILE_LOCATION)
-        self.sound_file = simpleaudio.WaveObject.from_wave_file(sound_filepath)
+        pygame.mixer.init();
+
+        self.sound_file = pygame.mixer.music.load(sound_filepath)
+
         self._is_alarm_enabled = self.alarm_config[ALARM_ENABLED]
         self._is_alarm_on = False
         self.audio_playing = None
@@ -29,8 +32,8 @@ class AlarmController:
         self.snooze_time = int(self.alarm_config[SNOOZE])
 
     def turn_off_alarm(self):
-        if self._is_alarm_on:
-            self._is_alarm_on = False
+        pygame.mixer.music.stop()
+        self._is_alarm_on = False
 
     def reset_alarm_from_configs(self):
         self.turn_off_alarm()
@@ -89,8 +92,6 @@ class AlarmController:
                 # resets alarm for the next day
                 self.set_alarm_time(self.alarm_config[HOUR], self.alarm_config[MINUTE])
 
-        if self._is_alarm_on and (self.audio_playing is None or (not self.audio_playing.is_playing())):
-            self.audio_playing = self.sound_file.play()
-        elif not self._is_alarm_on:
-            if self.audio_playing is not None and self.audio_playing.is_playing():
-                self.audio_playing.stop()
+
+    def turn_on_alarm(self):
+        pygame.mixer.music.play(-1)

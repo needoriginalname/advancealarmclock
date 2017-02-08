@@ -104,11 +104,11 @@ class LCDDisplayDesigner:
         if self._top is not None:
             return self._top
 
-        if self.center_top is not None:
+        if self._center_top is not None:
             left_spacing, right_spacing = self._get_center_spacing(self.center_top)
             return " "*left_spacing + self.center_top + " "*right_spacing
 
-        if self._top_left is None or self._top_right is not None:
+        if self._top_left is not None or self._top_right is not None:
             return self._get_aligned_format(self.top_left, self.top_right)
 
         return ""
@@ -125,11 +125,11 @@ class LCDDisplayDesigner:
         if self._bottom is not None:
             return self._bottom
 
-        if self.center_bottom is not None:
+        if self._center_bottom is not None:
             left_spacing, right_spacing = self._get_center_spacing(self.center_bottom)
             return " " * left_spacing + self.center_bottom + " " * right_spacing
 
-        if self._bottom_left is None or self._bottom_right is not None:
+        if self._bottom_left is not None or self._bottom_right is not None:
             return self._get_aligned_format(self.bottom_left, self.bottom_right)
 
         return ""

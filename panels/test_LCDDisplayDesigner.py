@@ -24,15 +24,15 @@ class TestLCDDisplayDesigner(TestCase):
         n = None
         n2 = None
         lcd = LCDDisplayDesigner(top=n, bottom=n2)
-        self.assertEqual(lcd.top, " "*lcd.max_width)
-        self.assertEqual(lcd.bottom, " "*lcd.max_width)
+        self.assertEqual(lcd.top, "")
+        self.assertEqual(lcd.bottom, "")
 
     def test_center_empty(self):
         n = ""
         n2 = ""
         lcd = LCDDisplayDesigner(center_top=n, center_bottom=n2)
-        self.assertEqual(lcd.top, " "*lcd.max_width)
-        self.assertEqual(lcd.bottom, " "*lcd.max_width)
+        self.assertEqual(lcd.top, "")
+        self.assertEqual(lcd.bottom, "")
 
     def test_center_single(self):
         n = "a"

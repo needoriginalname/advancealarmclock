@@ -21,7 +21,6 @@ class PydoraPlayer(Player):
             print(song.song_name)
 
     def update(self):
-
         try:
             self._ensure_started()
             if self._process:
@@ -46,7 +45,6 @@ class PydoraPlayer(Player):
 
             if (self._playlist is None):
                 self._playlist = station.get_playlist()
-                
             try:
                 song = None
                 try:
@@ -69,6 +67,11 @@ class PydoraPlayer(Player):
     def stop(self):
         self.song = None
         super().stop()
+
+    def skip(self):
+        if self.song is not None and not self.song.is_ad:
+            self.stop()
+            self.play_station()
 
 
 
