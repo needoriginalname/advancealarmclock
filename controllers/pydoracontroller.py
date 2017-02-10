@@ -19,6 +19,7 @@ class PydoraController():
         self.config = config["pydora"]
         self._is_active = False
 
+
     def is_active(self):
         return self._is_active
 
@@ -66,8 +67,9 @@ class PydoraController():
         self.player.pause()
 
     def change_station(self):
-        self.stop()
-        self.play()
+        if self.is_active():
+            self.stop()
+            self.play()
 
     def skip(self):
         self.player.skip()
