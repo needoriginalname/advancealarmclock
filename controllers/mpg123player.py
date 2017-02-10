@@ -1,39 +1,44 @@
-from pydora.mpg123 import Player
-from pydora.utils import iterate_forever
-import select
+import subprocess
 
 
-class PydoraPlayer(Player):
-    def __init__(self, callbacks, control_channel):
+class MPG123Player():
+    def __init__(self):
         self.station = None
         self.song = None
         self._playlist = None
-        self._control_channel = control_channel
-        self._callbacks = callbacks
         self._process = None
-        self._ensure_started()
+
+        wd = "C:\\Users\\Owner\\Downloads\\mpg123-1.23.4-x86-64\\mpg123-1.23.4-x86-64\\"
+        import os
+        os.chdir(wd)
+        self.command_string = wd + "mpg123.exe"
+
+    def __del__(self):
+        if self._process:
+            self._process.kill()
+
+    def _send_cmd(self, command):
+        if self._process:
+            self._process.kill()
+
+        c = [self.command_string, "-q", "--ignore-mime", command]
+        print(c)
+        self._process = subprocess.Popen(c)
 
     def play(self, song):
         self.song = song
-        self._callbacks.play(song)
-        self._send_cmd("load {}".format(song.audio_url))
-        if not song.is_ad:
-            print(song.song_name)
+        self._send_cmd(song.audio_url)
 
     def update(self):
         try:
-            self._ensure_started()
             if self._process:
-                readers, _, _ = select.select(
-                    [self._process.stdout], [], [], 1)
-
-                for handle in readers:
-                    value = handle.readline().strip()
-                    print(value)
-                    if self._player_stopped(value):
+                    if self._player_stopped():
                         self.play_station()
         finally:
             pass
+
+    def pause(self):
+        pass
 
     def play_station(self, station=None):
         if station is None:
@@ -42,7 +47,7 @@ class PydoraPlayer(Player):
             self.station = station
 
         if station:
-            if (self._playlist is None):
+            if self._playlist is None:
                 self._playlist = station.get_playlist()
             try:
                 song = None
@@ -65,12 +70,16 @@ class PydoraPlayer(Player):
 
     def stop(self):
         self.song = None
-        super().stop()
+        if self._process:
+            self._process.kill()
 
     def skip(self):
         if self.song is not None and not self.song.is_ad:
             self.stop()
             self.play_station()
 
-
-
+    def _player_stopped(self):
+        if self._process is None or self._process.poll() is not None:
+            return True
+        else:
+            return False

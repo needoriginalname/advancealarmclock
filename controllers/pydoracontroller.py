@@ -1,22 +1,23 @@
 import sys
 from pandora import clientbuilder
 
-from controllers.pydoraplayer import PydoraPlayer
+# from controllers.pydoraplayer import PydoraPlayer
+from .mpg123player import MPG123Player
 import os
 import sys
-import pydora.player
-from pydora.player import PlayerCallbacks
+# import pydora.player
+#from pydora.player import PlayerCallbacks
 INDEX = "last-station-index"
 
 class PydoraController():
     def __init__(self, config):
-        callbacks = PlayerCallbacks()
-        self.player = PydoraPlayer(callbacks, sys.stdin)
+        #callbacks = PlayerCallbacks()
+        self.player = MPG123Player()
+        #self.player = PydoraPlayer(callbacks, sys.stdin)
         self.client = self.get_client()
         self.stations = self.client.get_station_list()
         self.config = config["pydora"]
         self._is_active = False
-        self._station_index = int()
 
     def is_active(self):
         return self._is_active
@@ -49,10 +50,13 @@ class PydoraController():
         return self.player.song
 
     def get_current_station_index(self):
-        return self.config[INDEX]
+        n = int(self.config[INDEX])
+        if n > len(self.get_stations()):
+            n = 0
+        return n
 
     def set_current_station_index(self, n):
-        self.config[INDEX] = n
+        self.config[INDEX] = str(n)
 
     def play(self):
         self.player.play_station(station=self.get_current_station())
