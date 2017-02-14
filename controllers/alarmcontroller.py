@@ -18,12 +18,11 @@ class AlarmController:
 
         # setup the alarm sound
         sound_filepath = os.path.join(os.path.dirname(__file__), ALARM_FILE_LOCATION)
-        pygame.mixer.init();
+        pygame.mixer.init()
 
         self.sound_file = pygame.mixer.music.load(sound_filepath)
 
         self._is_alarm_enabled = self.alarm_config[ALARM_ENABLED]
-        self._is_alarm_on = False
         self.audio_playing = None
 
         # sets the alarm time
@@ -32,7 +31,6 @@ class AlarmController:
         self.snooze_time = int(self.alarm_config[SNOOZE])
 
     def turn_off_alarm(self):
-        pygame.mixer.music.stop()
         self._is_alarm_on = False
 
     def reset_alarm_from_configs(self):
@@ -70,6 +68,8 @@ class AlarmController:
         self.set_alarm_time(d.hour, d.minute)
 
     def set_alarm_time(self, hour, minute):
+        "Sets the time for when the alarm will go off"
+
         self.turn_off_alarm()
         alarm_hour = int(hour)
         alarm_min = int(minute)
@@ -87,11 +87,17 @@ class AlarmController:
         current_time = datetime.datetime.now()
         if current_time > self.alarm_time:
             if self._is_alarm_enabled:
-                self._is_alarm_on = True
+                self.turn_on_alarm()
             else:
                 # resets alarm for the next day
                 self.set_alarm_time(self.alarm_config[HOUR], self.alarm_config[MINUTE])
 
+        if not pygame.mixer.music.get_busy() and self._is_alarm_on:
+            pygame.mixer.music.play(-1)
+
+        if not self._is_alarm_on and pygame.mixer.music.get_busy():
+            pygame.mixer.music.stop()
+
 
     def turn_on_alarm(self):
-        pygame.mixer.music.play(-1)
+        self._is_alarm_on = True

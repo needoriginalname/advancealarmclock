@@ -21,19 +21,19 @@ class AlarmClock:
         return config
 
     def __init__(self):
-        config = self.setup_config_parser()
+        self.config = self.setup_config_parser()
 
-        weather_controller = WeatherController(config)
-        alarm_controller = AlarmController(config)
-        pydora_controller = PydoraController(config)
+        weather_controller = WeatherController(self.config)
+        alarm_controller = AlarmController(self.config)
+        pydora_controller = PydoraController(self.config)
 
         self.controllers = [weather_controller, alarm_controller, pydora_controller]
 
-        weather_panel = WeatherPanel(config, weather_controller)
-        time_panel = TimePanel(config, alarm_controller)
-        pydora_panel = PandoraPanel(config, pydora_controller)
+        weather_panel = WeatherPanel(self.config, weather_controller)
+        time_panel = TimePanel(self.config, alarm_controller)
+        pydora_panel = PandoraPanel(self.config, pydora_controller)
 
-        self.gui_interface = TKWIndow(config, self)
+        self.gui_interface = TKWIndow(self.config, self)
 
         self.panels = [time_panel, weather_panel, pydora_panel]
 

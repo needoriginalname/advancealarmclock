@@ -21,7 +21,7 @@ class TimePanel(IPanel):
             lcd.center_top = datetime.datetime.now().strftime(self.config[EXTENDED_TIME_FORMAT])
             lcd.center_bottom = datetime.datetime.now().strftime(self.config[EXTENDED_DATE_FORMAT])
         else:
-            lcd.center_top = ALARM_TIME_STRING
+            lcd.center_bottom = ALARM_TIME_STRING
             if (datetime.datetime.now() - self._blink_change_time) > datetime.timedelta(milliseconds=500):
                 self._blink_change_time = datetime.datetime.now()
                 self._blink = not self._blink
@@ -32,7 +32,7 @@ class TimePanel(IPanel):
                 else:
                     lcd.center_top = self.alarm_controller.alarm_time.strftime(self.config[MINUTE_BLINK_ALARM_FORMAT])
             else:
-                lcd.center_bottom = self.alarm_controller.alarm_time.strftime(self.config[ALARM_FORMAT])
+                lcd.center_top = self.alarm_controller.alarm_time.strftime(self.config[ALARM_FORMAT])
         return lcd
 
     def process_keys(self, keys_pressed, keys_down):

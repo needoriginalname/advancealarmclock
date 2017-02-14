@@ -67,6 +67,7 @@ class MPG123Player():
 
     def end_station(self):
         self.stop()
+        self._playlist = None
 
     def stop(self):
         self.song = None
