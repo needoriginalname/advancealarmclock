@@ -18,7 +18,7 @@ class TestPandoraPanel(TestCase):
     def setUp(self):
         self.config = dict()
         pydora_config = dict()
-        pydora_config[LAST_PANEL_INDEX] = str(3)
+        pydora_config[LAST_PANEL_INDEX] = str(2)
         self.config[PYDORA_CONFIG_LOC] = pydora_config
 
         self.controller = PydoraController(self.config)

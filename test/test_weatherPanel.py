@@ -1,6 +1,6 @@
 from unittest import TestCase
 from controllers.weathercontroller import WeatherController
-from .weatherpanel import WeatherPanel
+from panels.weatherpanel import WeatherPanel
 from enumbutton import EnumButton
 
 
