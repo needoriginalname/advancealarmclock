@@ -37,6 +37,7 @@ class PandoraPanel(IPanel):
                 self.next_station_index = len(self.controller.get_stations())-1
             elif self.next_station_index >= len(self.controller.get_stations()):
                 self.next_station_index = 0
+            return True
         else:
             self.current_panel = SHOW_CURRENT_SONG
 
@@ -57,7 +58,9 @@ class PandoraPanel(IPanel):
                 elif EnumButton.LEFT in keys_pressed:
                     if self.controller.is_active():
                         self.controller.skip()
-
+                return True
+            else:
+                return False
     def get_display(self):
         lcd = LCDDisplayDesigner()
         if self.current_panel == SHOW_CURRENT_SONG:

@@ -8,7 +8,7 @@ import sys
 # import pydora.player
 #from pydora.player import PlayerCallbacks
 INDEX = "last-station-index"
-
+PANDORA = "Pandora"
 class PydoraController():
     def __init__(self, config):
         #callbacks = PlayerCallbacks()
@@ -16,7 +16,7 @@ class PydoraController():
         #self.player = PydoraPlayer(callbacks, sys.stdin)
         self.client = self.get_client()
         self.stations = self.client.get_station_list()
-        self.config = config["pydora"]
+        self.config = config[PANDORA]
         self._is_active = False
 
 
