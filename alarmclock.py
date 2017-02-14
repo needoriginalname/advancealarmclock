@@ -1,9 +1,11 @@
+from panels.pandorapanel import PandoraPanel
 from tkwindow import TKWIndow
 from configparser import ConfigParser
 from tkwindow import TKWIndow
 from controllers.weathercontroller import WeatherController
 
 from controllers.alarmcontroller import AlarmController
+from controllers.pydoracontroller import PydoraController
 from panels.timepanel import TimePanel
 from panels.weatherpanel import WeatherPanel
 from enumbutton import EnumButton
@@ -23,27 +25,18 @@ class AlarmClock:
 
         weather_controller = WeatherController(config)
         alarm_controller = AlarmController(config)
-        pydora_controller = None
+        pydora_controller = PydoraController(config)
 
-        self.controllers = [weather_controller, alarm_controller]
+        self.controllers = [weather_controller, alarm_controller, pydora_controller]
 
         weather_panel = WeatherPanel(config, weather_controller)
         time_panel = TimePanel(config, alarm_controller)
-        pydora_panel = None
-
-        if sys.platform.startswith('linux'):
-            from controllers.pydoracontroller import PydoraController
-            pydora_controller = PydoraController(config)
-            self.controllers.append(pydora_controller)
-            # TODO: add pydora panel here
-        else:
-            print("Non-Linux system found, skipping Pydora setup")
+        pydora_panel = PandoraPanel(config, pydora_controller)
 
         self.gui_interface = TKWIndow(config, self)
 
-        self.panels = [time_panel, weather_panel]
-        if pydora_panel is not None:
-            self.panels.append(pydora_panel)
+        self.panels = [time_panel, weather_panel, pydora_panel]
+
         self.panel_index = 0;
 
     def start(self):
@@ -54,27 +47,23 @@ class AlarmClock:
         keys_held = self.gui_interface.get_buttons_held_down()
         if not self.panels[self.panel_index].process_keys(keys_pressed, keys_held):
             if EnumButton.LEFT in keys_pressed:
-                self.panel_index = self._wrap(self.panel_index - 1, 0, len(self.panels) - 1)
+                self.panel_index = self._wrap(self.panel_index - 1, len(self.panels) - 1)
             elif EnumButton.RIGHT in keys_pressed:
-                self.panel_index = self._wrap(self.panel_index + 1, 0, len(self.panels) - 1)
-
+                self.panel_index = self._wrap(self.panel_index + 1, len(self.panels) - 1)
 
         for controller in self.controllers:
             controller.update()
         self.gui_interface.set_output(self.panels[self.panel_index].get_display())
 
-    def _wrap(self, n, min_value, max_value):
+    @staticmethod
+    def _wrap(n, max_value):
         if n > max_value:
-            n = (n - max_value) + min_value
+            n = 0
 
-        if n < min_value:
-            n = max_value - (min_value - n)
+        if n < 0:
+            n = max_value
 
         return n
-
-
-
-
 
 
 if __name__ == "__main__":

@@ -36,15 +36,8 @@ class TKWIndow(IInputOutputCallbacks):
         return self.buttons_pressed
 
     def set_output(self, output_list):
-        if len(output_list) == 1:
-            self.output1.set(output_list[0])
-            self.output2.set("")
-        elif len(output_list) >= 2:
-            self.output1.set(output_list[0])
-            self.output2.set(output_list[1])
-        else:
-            self.output1.set("")
-            self.output2.set("")
+        self.output1.set(output_list[0])
+        self.output2.set(output_list[1])
 
     def __init__(self, config, alarm_clock_head):
         self.root = Tk()
@@ -72,11 +65,9 @@ class TKWIndow(IInputOutputCallbacks):
     def start(self):
         self.root.after(100, func=self._loop)
         self.root.mainloop()
-        pass
 
     def _loop(self):
         self.update()
         self.alarm_clock_head.update()
         self.buttons_pressed.clear()
         self.root.after(100, func=self._loop)
-        pass
