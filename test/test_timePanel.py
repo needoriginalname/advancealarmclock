@@ -31,8 +31,8 @@ class TestTimePanel(TestCase):
             'alarm-enabled': str(True)
         }}
 
-        alarm_controller = AlarmController(config)
-        self.panel = TimePanel(config, alarm_controller)
+        self.controller = AlarmController(config)
+        self.panel = TimePanel(config, self.controller)
 
     def test_display(self):
         self.panel._panel_index = 0
@@ -47,6 +47,7 @@ class TestTimePanel(TestCase):
         print(self.panel.get_display())
         self.panel._blink = True
         print(self.panel.get_display())
+        self.assertFalse(self.controller.has_changed_config())
 
     def test_change_hour(self):
         self.panel._panel_index = 0
@@ -60,6 +61,7 @@ class TestTimePanel(TestCase):
         self.panel.process_keys([EnumButton.LEFT], [EnumButton.ENTER])
         self.assertEqual(self.panel._panel_index, 1)
         print(self.panel.get_display())
+        self.assertTrue(self.controller.has_changed_config())
 
     def test_change_minute(self):
         self.panel._panel_index = 0
@@ -80,3 +82,4 @@ class TestTimePanel(TestCase):
 
         self.panel.process_keys([], [])
         self.assertEqual(self.panel._panel_index, 0)
+        self.assertTrue(self.controller.has_changed_config())

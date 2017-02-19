@@ -11,14 +11,14 @@ from panels.pandorapanel import AD_TEXT
 from panels.pandorapanel import NO_SONG_PLAYING
 
 LAST_PANEL_INDEX = "last-station-index"
-PYDORA_CONFIG_LOC = "pydora"
+PYDORA_CONFIG_LOC = "Pandora"
 
 
 class TestPandoraPanel(TestCase):
     def setUp(self):
         self.config = dict()
         pydora_config = dict()
-        pydora_config[LAST_PANEL_INDEX] = str(2)
+        pydora_config[LAST_PANEL_INDEX] = str(1)
         self.config[PYDORA_CONFIG_LOC] = pydora_config
 
         self.controller = PydoraController(self.config)
@@ -27,6 +27,7 @@ class TestPandoraPanel(TestCase):
     def test_no_song_playing(self):
         print("No song playing test")
         self.assertTrue(NO_SONG_PLAYING in self.panel.get_display()[0])
+        self.assertFalse(self.controller.has_changed_config())
 
     def test_stopped_song_after_playing(self):
         print("song stopped after playing test")
@@ -34,12 +35,14 @@ class TestPandoraPanel(TestCase):
         time.sleep(15)
         self.start_stop_playing_keys(self.panel)
         self.assertTrue(NO_SONG_PLAYING in self.panel.get_display()[0])
+        self.assertFalse(self.controller.has_changed_config())
 
     def test_song_playing(self):
         print("song playing test")
         self.start_stop_playing_keys(self.panel)
         time.sleep(15)
         self.assertFalse(NO_SONG_PLAYING in self.panel.get_display()[0])
+        self.assertFalse(self.controller.has_changed_config())
 
     def test_song_changing(self):
         # test can fail if audio file is very very long
@@ -52,11 +55,13 @@ class TestPandoraPanel(TestCase):
             self.controller.update()
         song2 = self.panel.get_display()[0]
         self.assertNotEqual(song1, song2)
+        self.assertFalse(self.controller.has_changed_config())
 
     def test_song_skip(self):
         print("song skip test")
         self.start_stop_playing_keys(self.panel)
         self.hold_if_ad(self.controller, self.panel)
+        self.assertFalse(self.controller.has_changed_config())
 
         song1 = self.panel.get_display()[0]
         time.sleep(10)
@@ -75,7 +80,7 @@ class TestPandoraPanel(TestCase):
 
         self.all_keys_up(self.panel)
         # song_title2 = self.get_first_display_song(self.panel)
-
+        self.assertFalse(self.controller.has_changed_config())
         self.assertTrue(NO_SONG_PLAYING in self.panel.get_display()[0])
 
     def test_show_station_while_playing(self):
@@ -91,6 +96,7 @@ class TestPandoraPanel(TestCase):
         song_title2 = self.get_first_display_song(self.panel)
 
         self.assertEqual(song_title, song_title2)
+        self.assertFalse(self.controller.has_changed_config())
 
     def test_scroll_stations_while_stopped(self):
         print("scroll station while stopped test")
@@ -109,6 +115,7 @@ class TestPandoraPanel(TestCase):
         self.all_keys_up(self.panel)
         song_title2 = self.get_first_display_song(self.panel)
         self.assertEqual(song_title, song_title2)
+        self.assertFalse(self.controller.has_changed_config())
 
     def test_scroll_stations_while_playing(self):
         print("scroll station while playing test")
@@ -128,6 +135,7 @@ class TestPandoraPanel(TestCase):
         self.all_keys_up(self.panel)
         song_title2 = self.get_first_display_song(self.panel)
         self.assertEqual(song_title, song_title2)
+        self.assertFalse(self.controller.has_changed_config())
 
     def test_change_station_while_playing(self):
         print("change station while playing test")
@@ -152,6 +160,7 @@ class TestPandoraPanel(TestCase):
         # check new song name
         song_title2 = self.get_first_display_song(self.panel)
         self.assertNotEqual(song_title1, song_title2)
+        self.assertTrue(self.controller.has_changed_config())
 
     def test_change_station_while_stopped(self):
         print("change station while stopped test")
@@ -175,6 +184,7 @@ class TestPandoraPanel(TestCase):
         song_title2 = self.get_first_display_song(self.panel)
         self.assertEqual(song_title1, song_title2)
         self.assertTrue(NO_SONG_PLAYING in self.panel.get_display()[0])
+        self.assertTrue(self.controller.has_changed_config())
 
     @staticmethod
     def show_change_station_keys(panel, button=None):

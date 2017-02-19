@@ -61,6 +61,7 @@ class PandoraPanel(IPanel):
                 return True
             else:
                 return False
+
     def get_display(self):
         lcd = LCDDisplayDesigner()
         if self.current_panel == SHOW_CURRENT_SONG:

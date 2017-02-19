@@ -1,6 +1,8 @@
 import pyowm
 import time
 
+from controllers.icontroller import IController
+
 WEATHER = 'Weather'
 API_KEY = 'api-key'
 LOCATION_CODE = 'location-code'
@@ -8,7 +10,10 @@ UPDATE_TIME = 'update-time'
 MAX_NUMBER_OF_DAYS = 5
 
 
-class WeatherController:
+class WeatherController(IController):
+    def has_changed_config(self):
+        return self._config_changed
+
     def __init__(self, config):
         self.config = config[WEATHER]
         self.owm = pyowm.OWM(self.config[API_KEY])
@@ -18,6 +23,7 @@ class WeatherController:
         self.currentWeather = None
         self.weatherForecasts = None
         self.update()
+        self._config_changed = False
 
     def update(self):
         if self._time_last_checked + self.time_to_check <= time.time():

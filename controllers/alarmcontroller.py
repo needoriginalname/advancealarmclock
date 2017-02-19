@@ -2,6 +2,8 @@ import pygame
 import datetime
 import os
 
+from controllers.icontroller import IController
+
 ALARM_SECTION = "Alarm"
 GENERAL = "General"
 ALARM_FILE_LOCATION = "alarm.wav"
@@ -11,7 +13,10 @@ MINUTE = 'minute'
 SNOOZE = 'snooze'
 
 
-class AlarmController:
+class AlarmController(IController):
+    def has_changed_config(self):
+        return self.changed_config
+
     def __init__(self, config):
         self.alarm_config = config[ALARM_SECTION]
         self.config = config[GENERAL]
@@ -27,8 +32,10 @@ class AlarmController:
 
         # sets the alarm time
         self.alarm_time = None
+        self._is_alarm_on = False
         self.set_alarm_time(int(self.alarm_config[HOUR]), int(self.alarm_config[MINUTE]))
         self.snooze_time = int(self.alarm_config[SNOOZE])
+        self.changed_config = False
 
     def turn_off_alarm(self):
         self._is_alarm_on = False
@@ -47,28 +54,30 @@ class AlarmController:
         alarm_hour = int(self.alarm_config[HOUR])
         alarm_min = int(self.alarm_config[MINUTE])
         d = datetime.datetime.now().replace(hour=alarm_hour, minute=alarm_min, second=0, microsecond=0)
-        hoursToChange = 1
+        hours_to_change = 1
         if reverse:
-            hoursToChange = -1
-        d = d + datetime.timedelta(hours=hoursToChange)
+            hours_to_change = -1
+        d = d + datetime.timedelta(hours=hours_to_change)
         self.alarm_config[HOUR] = str(d.hour)
         self.alarm_config[MINUTE] = str(d.minute)
         self.set_alarm_time(d.hour, d.minute)
+        self.changed_config = True
 
     def add_minute_to_alarm_config(self, reverse=False):
         alarm_hour = int(self.alarm_config[HOUR])
         alarm_min = int(self.alarm_config[MINUTE])
         d = datetime.datetime.now().replace(hour=alarm_hour, minute=alarm_min, second=0, microsecond=0)
-        minutessToChange = 1
+        minutess_to_change = 1
         if reverse:
-            minutessToChange = -1
-        d = d + datetime.timedelta(minutes=minutessToChange)
+            minutess_to_change = -1
+        d = d + datetime.timedelta(minutes=minutess_to_change)
         self.alarm_config[HOUR] = str(d.hour)
         self.alarm_config[MINUTE] = str(d.minute)
         self.set_alarm_time(d.hour, d.minute)
+        self.changed_config = True
 
     def set_alarm_time(self, hour, minute):
-        "Sets the time for when the alarm will go off"
+        # Sets the time for when the alarm will go off
 
         self.turn_off_alarm()
         alarm_hour = int(hour)
@@ -84,6 +93,7 @@ class AlarmController:
             self.alarm_time = alarm_today
 
     def update(self):
+        self.changed_config = False
         current_time = datetime.datetime.now()
         if current_time > self.alarm_time:
             if self._is_alarm_enabled:
@@ -97,7 +107,6 @@ class AlarmController:
 
         if not self._is_alarm_on and pygame.mixer.music.get_busy():
             pygame.mixer.music.stop()
-
 
     def turn_on_alarm(self):
         self._is_alarm_on = True

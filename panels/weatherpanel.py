@@ -18,6 +18,8 @@ TEMP_MAX = "temp_max"
 TEMP = "temp"
 MAX = "max"
 MIN = "min"
+
+
 class WeatherPanel(IPanel):
     def process_keys(self, keys_pressed, keys_down):
         if EnumButton.ENTER in keys_down:
@@ -81,22 +83,3 @@ class WeatherPanel(IPanel):
         self.weather_config = config[WEATHER]
         self.weather_controller = weather_controller
         self._panel_index = 0
-
-@staticmethod
-def _get_center_padding(s):
-    # get padding to center the string for middle of display
-    n = 20 - len(s)
-    l = math.floor(n / 2)
-    r = math.ceil(n / 2)
-
-    if l < 0:
-        l = 0
-    if r < 0:
-        r = 0
-
-    return l, r
-
-def _center_string(self, s):
-    l, r = self._get_center_padding(s)
-    result = " " * l + s + " " * r
-    return result

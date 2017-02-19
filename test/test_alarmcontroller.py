@@ -41,7 +41,7 @@ class TestAlarmController(TestCase):
         self.controller.snooze()
         time2 = self.controller.alarm_time
         self.assertTrue(time2 > time1)
-
+        self.assertFalse(self.controller.has_changed_config())
         print("Ending Snooze Test")
 
     def test_add_hour_to_alarm(self):
@@ -56,6 +56,7 @@ class TestAlarmController(TestCase):
 
         self.assertEqual((time2 - time1).seconds, 60 * 60)
         self.assertEqual((time3 - time4).seconds, 60 * 60)
+        self.assertTrue(self.controller.has_changed_config())
         print("Finish Add Hour To Alarm Test")
 
     def test_alarm_hour_roll_over(self):
@@ -69,6 +70,8 @@ class TestAlarmController(TestCase):
 
         self.assertEqual((t2-t).seconds, 60*60)
         self.assertEqual((t2-t4).seconds, 60*60)
+
+        self.assertTrue(self.controller_midnight_alarm.has_changed_config())
         print("Finishing Add Hour Rollover To Alarm Test")
 
 
@@ -83,6 +86,8 @@ class TestAlarmController(TestCase):
 
         self.assertEqual((t2-t).seconds, 60)
         self.assertEqual((t2-t4).seconds, 60)
+
+        self.assertTrue(self.controller_midnight_alarm.has_changed_config())
         print("Finishing Add Minute Rollover To Alarm Test")
 
     def test_add_minute_to_alarm(self):
@@ -97,6 +102,7 @@ class TestAlarmController(TestCase):
 
         self.assertEqual((time2 - time1).seconds, 60)
         self.assertEqual((time3 - time4).seconds, 60)
+        self.assertTrue(self.controller.has_changed_config())
         print("Finishing Add Minute To Alarm Test")
 
     def test_set_alarm_time(self):
@@ -117,4 +123,5 @@ class TestAlarmController(TestCase):
         time.sleep(2)
         self.controller.snooze()
         self.assertFalse(self.controller._is_alarm_on)
+        self.assertFalse(self.controller.has_changed_config())
         print("Finishing Alarm test")

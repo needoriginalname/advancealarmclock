@@ -13,8 +13,8 @@ class TKWIndow(IInputOutputCallbacks):
     def update(self):
         self.button_down_string = str(self.buttons_held_down)
         self.button_press_string = str(self.buttons_pressed)
-        print("pressed " + str(self.buttons_pressed))
-        print("down " + str(self.buttons_held_down))
+        # print("pressed " + str(self.buttons_pressed))
+        # print("down " + str(self.buttons_held_down))
 
     def button_press(self, event):
         button = EnumButton.get_button_from_keyboard(event.char)

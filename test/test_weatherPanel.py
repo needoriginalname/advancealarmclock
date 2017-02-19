@@ -16,8 +16,8 @@ class TestWeatherPanel(TestCase):
             "date-format": "%m %d"
         }}
 
-        controller = WeatherController(config)
-        self.panel = WeatherPanel(config, controller)
+        self.controller = WeatherController(config)
+        self.panel = WeatherPanel(config, self.controller)
 
     def test_process_keys(self):
         self.assertTrue(self.panel._panel_index == 0)
@@ -40,7 +40,7 @@ class TestWeatherPanel(TestCase):
         self.assertEqual(self.panel._panel_index, 3)
         self.assertFalse(self.panel.process_keys([EnumButton.LEFT],[]))
         self.assertEqual(self.panel._panel_index, 0)
-
+        self.assertFalse(self.controller.has_changed_config())
 
     def test_get_display(self):
         self.panel._panel_index = 0
@@ -51,3 +51,4 @@ class TestWeatherPanel(TestCase):
         print(self.panel.get_display())
         self.panel._panel_index = 3
         print(self.panel.get_display())
+        self.assertFalse(self.controller.has_changed_config())

@@ -72,21 +72,4 @@ class TimePanel(IPanel):
         self._blink = False
         self._blink_change_time = datetime.datetime.now()
 
-    @staticmethod
-    def _get_center_padding(s):
-        # get padding to center the string for middle of display
-        n = 20 - len(s)
-        l = math.floor(n / 2)
-        r = math.ceil(n / 2)
 
-        if l < 0:
-            l = 0
-        if r < 0:
-            r = 0
-
-        return l, r
-
-    def _center_string(self, s):
-        l, r = self._get_center_padding(s)
-        result = " " * l + s + " " * r
-        return result

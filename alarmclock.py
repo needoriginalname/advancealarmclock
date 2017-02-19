@@ -9,18 +9,27 @@ from controllers.pydoracontroller import PydoraController
 from panels.timepanel import TimePanel
 from panels.weatherpanel import WeatherPanel
 from enumbutton import EnumButton
-import os.path as path
-import sys
+import logging
+import os
+FILE = os.getcwd() + "/" + "alarmclock.cfg"
 
-FILE = "alarmclock.cfg"
 
 class AlarmClock:
+
     def setup_config_parser(self):
         config = ConfigParser()
         config.read(FILE)
         return config
 
+
     def __init__(self):
+
+        l = logging.basicConfig(
+            filename="alarmclock.log",
+            level=logging.DEBUG,
+            format='%(levelname)s:%(asctime)s:%(message)s'
+        )
+
         self.config = self.setup_config_parser()
 
         weather_controller = WeatherController(self.config)
@@ -34,10 +43,9 @@ class AlarmClock:
         pydora_panel = PandoraPanel(self.config, pydora_controller)
 
         self.gui_interface = TKWIndow(self.config, self)
-
         self.panels = [time_panel, weather_panel, pydora_panel]
-
         self.panel_index = 0;
+        logging.info("Alarm Clock Booting up")
 
     def start(self):
         self.gui_interface.start()
@@ -52,8 +60,19 @@ class AlarmClock:
                 self.panel_index = self._wrap(self.panel_index + 1, len(self.panels) - 1)
 
         for controller in self.controllers:
+            if controller.has_changed_config():
+                with open(FILE, 'w') as configfile:
+                    try:
+                        self.config.write(configfile)
+                        configfile.close()
+                    except Exception as e:
+                        print(e)
+                        logging.error(e)
+
             controller.update()
         self.gui_interface.set_output(self.panels[self.panel_index].get_display())
+
+
 
     @staticmethod
     def _wrap(n, max_value):
