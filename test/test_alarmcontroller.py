@@ -74,7 +74,6 @@ class TestAlarmController(TestCase):
         self.assertTrue(self.controller_midnight_alarm.has_changed_config())
         print("Finishing Add Hour Rollover To Alarm Test")
 
-
     def test_alarm_minute_roll_over(self):
         print("Starting Add Minute Rollover To Alarm Test")
         self.controller_midnight_alarm.set_alarm_time(0,0)

@@ -36,8 +36,3 @@ class WeatherController(IController):
 
     def get_forecast_weathers(self):
         return self.weatherForecasts
-
-
-
-
-

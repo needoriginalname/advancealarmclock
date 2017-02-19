@@ -104,7 +104,7 @@ class TestPydoraController(TestCase):
         self.assertFalse(self.controller.has_changed_config())
 
     def tearDown(self):
-        "30 pause between any tests to prevent getting a potential hit from Pandora"
+        # 30 pause between any tests to prevent getting a potential hit from Pandora
 
         self.controller.stop()
         time.sleep(30)

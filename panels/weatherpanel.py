@@ -3,6 +3,7 @@ from enum import Enum
 from enumbutton import EnumButton
 from datetime import datetime
 from .lcddisplaydesigner import LCDDisplayDesigner
+
 MAX_PANELS = 3
 DEGREE_SYMBOL = u"\u00b0"
 
@@ -45,36 +46,30 @@ class WeatherPanel(IPanel):
             return False
 
     def get_display(self):
-        d = ["",""]
-        topleft = None
-        topright = None
-        bottomleft = None
-        bottomright = None
-        lcd = None
+        d = ["", ""]
         if self._panel_index == 0:
             current_weather = self.weather_controller.get_current_weather()
             temps = current_weather.get_temperature(self.weather_config[UNIT])
 
-            topleft = datetime.now().strftime(self.config[TIME_FORMAT])
-            topright = str(temps[TEMP])
-            bottomleft = current_weather.get_detailed_status()
-            bottomright = ""
+            top_left = datetime.now().strftime(self.config[TIME_FORMAT])
+            top_right = str(temps[TEMP])
+            bottom_left = current_weather.get_detailed_status()
+            bottom_right = ""
 
-            lcd = LCDDisplayDesigner(top_left= topleft, top_right=topright,bottom_left=bottomleft,
-                                     bottom_right=bottomright)
+            lcd = LCDDisplayDesigner(top_left=top_left, top_right=top_right, bottom_left=bottom_left,
+                                     bottom_right=bottom_right)
         else:
-            forcaster = self.weather_controller.get_forecast_weathers().get_forecast()
-            forcast_weather = forcaster.get(self._panel_index - 1)
-            time = datetime.fromtimestamp(forcast_weather.get_reference_time())
-            temps = forcast_weather.get_temperature(self.weather_config[UNIT])
+            forecaster = self.weather_controller.get_forecast_weathers().get_forecast()
+            forecast_weather = forecaster.get(self._panel_index - 1)
+            time = datetime.fromtimestamp(forecast_weather.get_reference_time())
+            temps = forecast_weather.get_temperature(self.weather_config[UNIT])
 
-            topleft = time.strftime(self.config[DATE_FORMAT])
-            topright = str(temps[MIN]) + " / " + str(temps[MAX])
-            bottomleft = forcast_weather.get_detailed_status()
-            bottomright = ""  # temps["morn"] + " / " + temps["day"] + " / " + temps["eve"]
-            lcd = LCDDisplayDesigner(top_left=topleft, top_right=topright, bottom_left=bottomleft,
-                                     bottom_right=bottomright)
-
+            top_left = time.strftime(self.config[DATE_FORMAT])
+            top_right = str(temps[MIN]) + " / " + str(temps[MAX])
+            bottom_left = forecast_weather.get_detailed_status()
+            bottom_right = ""  # temps["morn"] + " / " + temps["day"] + " / " + temps["eve"]
+            lcd = LCDDisplayDesigner(top_left=top_left, top_right=top_right, bottom_left=bottom_left,
+                                     bottom_right=bottom_right)
 
         return lcd
 

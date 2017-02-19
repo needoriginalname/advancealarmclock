@@ -45,24 +45,23 @@ class TestLCDDisplayDesigner(TestCase):
         self.assertEqual(lcd.top, " "*na + n + " "*nb)
         self.assertEqual(lcd.bottom, " "*nc + n2 + " "*nd)
 
-
     def test_combo(self):
         n = "test"
         b1 = "a"
         b2 = "b"
         lcd = LCDDisplayDesigner(center_top=n, bottom_left=b1, bottom_right=b2)
-        topSpaceA = math.ceil((lcd.max_width - len(n))/2)
-        topSpaceB = math.floor((lcd.max_width - len(n))/2)
-        bottomSpace = lcd.max_width - len(b1) - len(b2)
-        self.assertEqual(lcd.top, " "*topSpaceA + n + " "*topSpaceB)
-        self.assertEqual(lcd.bottom, b1 + " "* bottomSpace + b2)
+        top_space_a = math.ceil((lcd.max_width - len(n))/2)
+        top_space_b = math.floor((lcd.max_width - len(n))/2)
+        bottom_space = lcd.max_width - len(b1) - len(b2)
+        self.assertEqual(lcd.top, " "*top_space_a + n + " "*top_space_b)
+        self.assertEqual(lcd.bottom, b1 + " "* bottom_space + b2)
 
 
     def test_access(self):
         n="t"
         lcd = LCDDisplayDesigner(center_top=n, bottom_left=n, bottom_right=n)
-        topleft_space = math.ceil((lcd.max_width - len(n))/2)
-        topright_space = math.floor((lcd.max_width - len(n))/2)
+        top_left_space = math.ceil((lcd.max_width - len(n))/2)
+        top_right_space = math.floor((lcd.max_width - len(n))/2)
         bottom_space = lcd.max_width - len(n)*2
-        self.assertEqual(lcd[0], " "*topleft_space + n + " "*topright_space)
+        self.assertEqual(lcd[0], " "*top_left_space + n + " "*top_right_space)
         self.assertEqual(lcd[1], n+" "*bottom_space+n)

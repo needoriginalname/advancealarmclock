@@ -13,9 +13,9 @@ HOUR_BLINK_ALARM_FORMAT = "hour-blink-alarm-format"
 MINUTE_BLINK_ALARM_FORMAT = "minute-blink-alarm-format"
 ALARM_TIME_STRING = "Alarm Time"
 
+
 class TimePanel(IPanel):
     def get_display(self):
-        result = ["", ""]
         lcd = LCDDisplayDesigner()
         if self._panel_index == 0:
             lcd.center_top = datetime.datetime.now().strftime(self.config[EXTENDED_TIME_FORMAT])
@@ -71,5 +71,3 @@ class TimePanel(IPanel):
         self._panel_index = 0
         self._blink = False
         self._blink_change_time = datetime.datetime.now()
-
-

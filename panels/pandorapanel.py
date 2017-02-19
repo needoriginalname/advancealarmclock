@@ -8,6 +8,7 @@ SHOW_STATIONS = 1
 NO_SONG_PLAYING = "No Song Playing"
 AD_TEXT = "Ad"
 
+
 class PandoraPanel(IPanel):
 
     def __init__(self, config, pydoracontroller):
@@ -45,7 +46,7 @@ class PandoraPanel(IPanel):
             if self.next_station_index is not None:
                 if self.next_station_index != self.controller.get_current_station_index():
                     self.controller.set_current_station_index(self.next_station_index)
-                    self.controller.change_station();
+                    self.controller.change_station()
                 self.next_station_index = None
 
             if EnumButton.SELECT in keys_down:

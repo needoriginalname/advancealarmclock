@@ -2,8 +2,8 @@ import math
 
 
 class LCDDisplayDesigner:
-    def __init__(self, max_width = 20, top_left=None, top_right = None, bottom_left = None, bottom_right=None,
-                 center_top = None, center_bottom = None, bottom = None, top = None):
+    def __init__(self, max_width=20, top_left=None, top_right=None, bottom_left=None, bottom_right=None,
+                 center_top=None, center_bottom=None, bottom=None, top=None):
 
         # check preconditions
         self._ensure_exclusive(top, center_top, [top_left, top_right], False)
@@ -35,7 +35,6 @@ class LCDDisplayDesigner:
             self.top = top
         if bottom:
             self.bottom = bottom
-
 
     @property
     def top_left(self):
@@ -106,7 +105,7 @@ class LCDDisplayDesigner:
 
         if self._center_top is not None:
             left_spacing, right_spacing = self._get_center_spacing(self.center_top)
-            return " "*left_spacing + self.center_top + " "*right_spacing
+            return " " * left_spacing + self.center_top + " " * right_spacing
 
         if self._top_left is not None or self._top_right is not None:
             return self._get_aligned_format(self.top_left, self.top_right)
@@ -134,7 +133,6 @@ class LCDDisplayDesigner:
 
         return ""
 
-
     @bottom.setter
     def bottom(self, value):
         self._bottom_right = None
@@ -142,7 +140,8 @@ class LCDDisplayDesigner:
         self._center_bottom = None
         self._bottom = value
 
-    def _ensure_exclusive(self, a, b, l, is_bottom):
+    @staticmethod
+    def _ensure_exclusive(a, b, l, is_bottom):
 
         s = ""
         if is_bottom:
@@ -165,7 +164,7 @@ class LCDDisplayDesigner:
                 is_error = True
 
         if is_error:
-            raise ValueError
+            raise RuntimeError(s)
 
     def _get_center_spacing(self, center_text):
         n = (self.max_width - len(center_text)) / 2
@@ -191,5 +190,3 @@ class LCDDisplayDesigner:
             return self.top
         else:
             return self.bottom
-
-
